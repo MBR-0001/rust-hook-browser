@@ -1,28 +1,164 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div style="width: 100%; padding: 0 5px;">
+      <h1 style="text-align: center;">Rust Hook Browser</h1>
+      <div class="flexer" style="margin: 5px 0;">
+        <b-form-input v-model="search" placeholder="Search"></b-form-input>
+        <b-pagination v-model="page" :total-rows="raw_hooks.length" :per-page="50" style="margin-bottom: 0;"></b-pagination>
+      </div>
+      <b-table responsive hover striped :fields="fields" :items="hooks" :busy="raw_hooks.length < 1" :per-page="50" :current-page="page" @row-clicked="rowClicked">
+        <template #table-busy>
+          <div class="text-center my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+      </b-table>
+    </div>
+
+    <b-modal id="hook_modal" :title='"Info about " + hook.name' hide-footer centered size="lg">
+      <table class="table">
+        <tr>
+          <td>Name</td>
+          <td>{{hook.name}}</td>
+        </tr>
+        <tr>
+          <td>Category</td>
+          <td>{{hook.category + "/" + hook.subcategory}}</td>
+        </tr>
+        <tr>
+          <td>Created At</td>
+          <td style="vertical-align: middle;">{{properDate(hook.created_at, true)}}</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li v-for="(line, i) in hook._description.split('\n')" :key="i">{{line.trim()}}</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>Example</td>
+          <td v-html="md.render(hook.example)" class="test">
+          </td>
+        </tr>
+      </table>
+    </b-modal>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Vue from "vue";
+import MarkdownIt from "markdown-it";
+import hljs from "highlight.js";
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+import "highlight.js/styles/default.css";
+
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  name: "App",
+  data: function () {
+    return {
+      url: "https://api.mbr.pw/api/rust/hooks",
+      raw_hooks: [],
+      page: 1,
+      search: "",
+      md: new MarkdownIt({
+        highlight: function(str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(lang, str).value;
+            } catch (__) { /**/ }
+          }
+        }
+      }),
+      hook: {_description: "", example: ""},
+      fields: [
+        {
+          key: "name",
+          label: "Name",
+          sortable: true
+        },
+        {
+          key: "category",
+          label: "Category",
+          sortable: true
+        },
+        {
+          key: "subcategory",
+          label: "Subcategory",
+          sortable: true
+        },
+        {
+          key: "description",
+          label: "Description"
+        }
+      ]
+    };
+  },
+  computed: {
+    hooks: function() {
+      let rv = this.raw_hooks;
+      
+      if (this.search) {
+        let q = this.search.toLowerCase();
+        rv = rv.filter(x => x.name.toLowerCase().includes(q) || x.description.toLowerCase().includes(q));
+      }
+
+      return rv;
+    }
+  },
+  methods: {
+    rowClicked: function(hook) {
+      this.hook = hook;
+      this.$bvModal.show("hook_modal");
+    },
+    properDate: function(date, hover = false) {
+      if (!date) return "";
+
+      if (typeof(date) == "string") date = new Date(date);
+
+      if (hover) return date.toUTCString().replace("GMT", "UTC");
+      return date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate() + " " + this.normalize(date.getUTCHours()) + ":" + this.normalize(date.getUTCMinutes()); 
+    }
+  },
+  mounted: function() {
+    fetch(this.url).then(r => r.json()).then(x => {
+      this.raw_hooks = x.map(x => ({
+        ...x,
+        _description: x.description.replace(/(<([^>]+)>)/gi, "").trim(),
+        description: x.description.split("\n")[1].replace(/(<([^>]+)>)/gi, "").trim()
+      }));
+      console.log(this.raw_hooks[0].example);
+    });
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.flexer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.test > pre {
+  margin: 0;
 }
 </style>
