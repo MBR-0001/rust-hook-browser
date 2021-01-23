@@ -19,7 +19,7 @@
       </b-table>
     </div>
 
-    <b-modal id="hook_modal" :title='"Info about " + hook.name' hide-footer centered size="lg">
+    <b-modal id="hook_modal" :title='"Info about " + hook.name' hide-footer centered size="lg" style="overflow: auto;">
       <table class="table">
         <tr>
           <td>Name</td>
