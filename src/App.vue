@@ -154,6 +154,6 @@ export default {
   align-items: center;
 }
 
-.example { padding-bottom: 0; }
+.example { padding-bottom: 0!important; }
 .example > pre { margin: 0; }
 </style>
