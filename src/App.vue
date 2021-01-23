@@ -13,6 +13,9 @@
             <strong>Loading...</strong>
           </div>
         </template>
+
+        <template #cell(description)="data">
+          {{data.item.description[0]}}
       </b-table>
     </div>
 
@@ -34,7 +37,7 @@
           <td>Description</td>
           <td>
             <ul style="margin: 0; padding-left: 20px;">
-              <li v-for="(line, i) in hook._description.split('\n')" :key="i">{{line.trim()}}</li>
+              <li v-for="(line, i) in hook.description" :key="i">{{line}}</li>
             </ul>
           </td>
         </tr>
@@ -108,7 +111,7 @@ export default {
       
       if (this.search) {
         let q = this.search.toLowerCase();
-        rv = rv.filter(x => x.name.toLowerCase().includes(q) || x.description.toLowerCase().includes(q));
+        rv = rv.filter(x => x.name.toLowerCase().includes(q) || x.description.some(d => d.toLowerCase().includes(q)));
       }
 
       return rv;
@@ -129,14 +132,7 @@ export default {
     }
   },
   mounted: function() {
-    fetch(this.url).then(r => r.json()).then(x => {
-      this.raw_hooks = x.map(x => ({
-        ...x,
-        _description: x.description.replace(/(<([^>]+)>)/gi, "").trim(),
-        description: x.description.split("\n")[1].replace(/(<([^>]+)>)/gi, "").trim()
-      }));
-      console.log(this.raw_hooks[0].example);
-    });
+    fetch(this.url).then(r => r.json()).then(x => this.raw_hooks = x);
   }
 };
 </script>
