@@ -43,7 +43,7 @@
         </tr>
         <tr>
           <td>Example</td>
-          <td v-html="md.render(hook.example)" class="test">
+          <td v-html="md.render(hook.example)" class="example">
           </td>
         </tr>
       </table>
@@ -154,7 +154,6 @@ export default {
   align-items: center;
 }
 
-.test > pre {
-  margin: 0;
-}
+.example { padding-bottom: 0; }
+.example > pre { margin: 0; }
 </style>
