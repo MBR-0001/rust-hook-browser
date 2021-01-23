@@ -19,7 +19,7 @@
       </b-table>
     </div>
 
-    <b-modal id="hook_modal" :title='"Info about " + hook.name' hide-footer centered size="lg" style="overflow: auto;">
+    <b-modal id="hook_modal" :title='"Info about " + hook.name' hide-footer centered size="lg" body-class="modal">
       <table class="table">
         <tr>
           <td>Name</td>
@@ -156,4 +156,5 @@ export default {
 
 .example { padding-bottom: 0!important; }
 .example > pre { margin: 0; }
+.modal { overflow: auto; }
 </style>
