@@ -10,5 +10,5 @@ module.exports = {
       });
   },
   productionSourceMap: false,
-  outputDir: path.resolve(__dirname, "../website/hooks_files")
+  outputDir: path.resolve(__dirname, "../files/hooks")
 };
