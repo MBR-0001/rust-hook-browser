@@ -1,5 +1,3 @@
-const path = require("path");
-
 module.exports = {
   chainWebpack: config => {
     config
@@ -9,6 +7,5 @@ module.exports = {
         return args;
       });
   },
-  productionSourceMap: false,
-  outputDir: path.resolve(__dirname, "../files/hooks")
+  productionSourceMap: false
 };

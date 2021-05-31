@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div style="width: 100%; padding: 0 5px;">
-      <h1 style="text-align: center;">Rust Hook Browser</h1>
+      <h1 style="text-align: center;">Rust Hook Browsert</h1>
       <div class="flexer" style="margin: 5px 0;">
         <b-form-input v-model="search" placeholder="Search"></b-form-input>
         <b-pagination v-model="page" :total-rows="raw_hooks.length" :per-page="50" style="margin-bottom: 0;"></b-pagination>
