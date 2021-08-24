@@ -14,9 +14,7 @@
           </div>
         </template>
 
-        <template #cell(description)="data">
-          {{data.item.description[0]}}
-        </template>
+        <template #cell(description)="data">{{data.item.description[0]}}</template>
       </b-table>
     </div>
 
