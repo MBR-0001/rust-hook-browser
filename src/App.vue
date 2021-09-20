@@ -3,7 +3,7 @@
     <div style="width: 100%; padding: 0 5px;">
       <h1 style="text-align: center;">Rust Hook Browser</h1>
       <div class="flexer" style="margin: 5px 0;">
-        <b-form-input v-model="search" placeholder="Search"></b-form-input>
+        <b-form-input type="search" v-model="search" placeholder="Search"></b-form-input>
         <b-pagination v-model="page" :total-rows="raw_hooks.length" :per-page="50" style="margin-bottom: 0;"></b-pagination>
       </div>
       <b-table responsive hover striped :fields="fields" :items="hooks" :busy="raw_hooks.length < 1" :per-page="50" :current-page="page" @row-clicked="rowClicked">
