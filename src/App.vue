@@ -67,7 +67,7 @@ export default {
   name: "App",
   data: function () {
     return {
-      url: "https://api.mbr.pw/api/rust/hooks",
+      url: "https://hooks.mbr.pw/api/hooks",
       raw_hooks: [],
       page: 1,
       search: "",
